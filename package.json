@@ -1,0 +1,9 @@
+{
+    "name": "osa-imessage",
+    "version": "0.0.0",
+    "description": "Bring the power of NodeJS to Apple iMessage",
+    "main": "index.js",
+    "dependencies": {
+        "osa": "^2.0.1",
+    }
+}
