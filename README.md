@@ -1,4 +1,4 @@
-![osa-imessage](resources/logo-sm.png)
+![osa-imessage](resources/logowithtext.png)
 
 osa-imessage
 ====
