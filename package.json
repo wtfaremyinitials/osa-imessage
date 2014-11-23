@@ -1,18 +1,21 @@
 {
-    "name": "osa-imessage",
-    "version": "0.0.0",
-    "description": "Bring the power of NodeJS to Apple iMessage",
-    "author": {
-        "name": "Will Franzen",
-        "email": "wtfranzen@gmail.com",
-        "url": "http://will.xyz"
-    },
-    "repositoty": {
-        "type": "git",
-        "url": "https://github.com/wtfaremyinitials/osa-imessage.git"
-    },
-    "main": "index.js",
-    "dependencies": {
-        "osa": "^2.0.1"
-    }
+  "name": "osa-imessage",
+  "version": "0.0.0",
+  "description": "Bring the power of NodeJS to Apple iMessage",
+  "author": {
+    "name": "Will Franzen",
+    "email": "wtfranzen@gmail.com",
+    "url": "http://will.xyz"
+  },
+  "repositoty": {
+    "type": "git",
+    "url": "https://github.com/wtfaremyinitials/osa-imessage.git"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "exec-sync": "^0.1.6",
+    "mkfifo": "0.0.1",
+    "node-uuid": "^1.4.1",
+    "osa": "^2.0.1"
+  }
 }
