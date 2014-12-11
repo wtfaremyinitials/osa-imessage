@@ -6,6 +6,7 @@ var mkfifo = require('mkfifo').mkfifoSync;
 var execSync = require('exec-sync');
 
 var EventEmitter = require("events").EventEmitter;
+var LineStream = require('byline').LineStream;
 
 var PHONE_REGEX = /'^\+\d{10}$'/;
 var EMAIL_REGEX = /^\S+@\S+$/; // simple email regex
@@ -40,8 +41,8 @@ var parse = function(input) {
 var startFIFORead = function() {
     var proc = spawn('tail', ['-f', FIFO_PATH]);
 
-    proc.stdout.on('data', function(data) {
-        data = JSON.parse(data+'');
+    proc.stdout.pipe(new LineStream()).on('data', function(data) {
+        data = JSON.parse(data);
         newMessages.emit('received', data);
     });
 };

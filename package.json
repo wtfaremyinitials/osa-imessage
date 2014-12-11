@@ -13,6 +13,7 @@
   },
   "main": "index.js",
   "dependencies": {
+    "byline": "^4.1.1",
     "exec-sync": "^0.1.6",
     "mkfifo": "0.0.1",
     "node-uuid": "^1.4.1",
