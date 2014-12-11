@@ -15,7 +15,7 @@ var user = execSync('whoami');
 var SCRIPT_PATH = '/Users/' + user + '/Library/Application Scripts/com.apple.iChat/osa-imessage-' + uuid + '.scpt';
 var FIFO_PATH   = '/tmp/osa-imessage-' + uuid + '.fifo';
 
-var listenScript = fs.readFileSync('./lib/events.scpt');
+var listenScript = fs.readFileSync(__dirname + '/lib/events.scpt');
 
 var len = 108-72;
 for(var i=0; i<len; i++)
