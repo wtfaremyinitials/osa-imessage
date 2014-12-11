@@ -1,8 +1,11 @@
 var fs = require('fs');
 var osa = require('osa');
 var uuid = require('node-uuid').v1();
+var spawn = require('child_process').spawn;
 var mkfifo = require('mkfifo').mkfifoSync;
 var execSync = require('exec-sync');
+
+var EventEmitter = require("events").EventEmitter;
 
 var PHONE_REGEX = /'^\+\d{10}$'/;
 var EMAIL_REGEX = /^\S+@\S+$/; // simple email regex
@@ -18,6 +21,8 @@ var len = 108-72;
 for(var i=0; i<len; i++)
     listenScript[68+i] = uuid.charCodeAt(i);
 
+var newMessages = new EventEmitter();
+
 var noop = function(){};
 
 var parse = function(input) {
@@ -30,6 +35,15 @@ var parse = function(input) {
     else
         return { name: input };
     return '';
+};
+
+var startFIFORead = function() {
+    var proc = spawn('tail', ['-f', FIFO_PATH]);
+
+    proc.stdout.on('data', function(data) {
+        data = JSON.parse(data+'');
+        newMessages.emit('received', data);
+    });
 };
 
 var iMessage = {};
@@ -73,6 +87,10 @@ iMessage.listen = function() {
     fs.writeSync(fd, listenScript, 0, listenScript.length);
     fs.closeSync(fd);
     // register with Messages.app
+
+    startFIFORead();
+
+    return newMessages;
 };
 
 iMessage.unlisten = function() {
