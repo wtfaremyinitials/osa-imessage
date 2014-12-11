@@ -12,7 +12,11 @@ var user = execSync('whoami');
 var SCRIPT_PATH = '/Users/' + user + '/Library/Application Scripts/com.apple.iChat/osa-imessage-' + uuid + '.scpt';
 var FIFO_PATH   = '/tmp/osa-imessage-' + uuid + '.fifo';
 
-var listenScript = (fs.readFileSync('./lib/events.scpt')+'');
+var listenScript = fs.readFileSync('./lib/events.scpt');
+
+var len = 108-72;
+for(var i=0; i<len; i++)
+    listenScript[68+i] = uuid.charCodeAt(i);
 
 var noop = function(){};
 
@@ -65,10 +69,9 @@ iMessage.getContact = function(input, cb) {
 iMessage.listen = function() {
     mkfifo(FIFO_PATH, 0755);
 
-    var listener = listenScript.replace('%path%', FIFO_PATH);
     var fd = fs.openSync(SCRIPT_PATH, 'w');
-    fs.writeSync(fd, listener);
-
+    fs.writeSync(fd, listenScript, 0, listenScript.length);
+    fs.closeSync(fd);
     // register with Messages.app
 };
 
