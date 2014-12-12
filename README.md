@@ -9,7 +9,14 @@ osa-imessage
 
 A node.js module to interact with iMessage.
 
-Requires OSX 10.10 Yosemite.
+Installation
+===
+
+**Requires OSX 10.10 Yosemite.**
+
+```bash
+npm install osa-imessage
+```
 
 Usage
 ====
