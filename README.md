@@ -51,6 +51,9 @@ var messages = require('osa-imessage');
 
 var messageEvents = messages.listen();
 
+// After messages.listen() is called, osa-imessage must be set
+// as the AppleScript handler in Messages.app's preferences page
+
 messageEvents.on('received', function(data){
     var message = data.text;           // "Hello, World!"
     var fromName = data.from.name;     // "Johnny Appleseed"
