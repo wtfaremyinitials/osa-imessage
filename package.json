@@ -7,6 +7,7 @@
     "email": "wtfranzen@gmail.com",
     "url": "http://will.xyz"
   },
+  "license": "MIT",
   "repositoty": {
     "type": "git",
     "url": "https://github.com/wtfaremyinitials/osa-imessage.git"
