@@ -19,5 +19,16 @@
     "mkfifo": "0.0.1",
     "node-uuid": "^1.4.1",
     "osa": "^2.0.1"
-  }
+   },
+   "keywords": [
+       "messages",
+       "osx",
+       "yosemite",
+       "jxa",
+       "osa",
+       "imessage",
+       "sms",
+       "send",
+       "receive"
+   ]
 }
