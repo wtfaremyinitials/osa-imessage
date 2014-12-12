@@ -1,6 +1,6 @@
 {
   "name": "osa-imessage",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Bring the power of NodeJS to Apple iMessage",
   "author": {
     "name": "Will Franzen",
