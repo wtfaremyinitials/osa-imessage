@@ -9,6 +9,8 @@ osa-imessage
 
 A node.js module to interact with iMessage.
 
+Developed for the [webmessage](https://github.com/wtfaremyinitials/webmessage) project that aims to bring an iMessage client to the browser
+
 Installation
 ===
 
