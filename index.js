@@ -42,7 +42,9 @@ var startFIFORead = function() {
     var proc = spawn('tail', ['-f', FIFO_PATH]);
 
     proc.stdout.pipe(new LineStream()).on('data', function(data) {
-        data = JSON.parse(data);
+        var replacements = /[�\0]/g;
+        data = JSON.parse(data.toString().replace(replacements, ""));
+        
         newMessages.emit('received', data);
     });
 };
