@@ -2,8 +2,6 @@ var fs = require('fs');
 var osa = require('osa');
 var uuid = require('node-uuid').v1();
 var spawn = require('child_process').spawn;
-var mkfifo = require('mkfifo').mkfifoSync;
-var execSync = require('exec-sync');
 
 var EventEmitter = require("events").EventEmitter;
 var LineStream = require('byline').LineStream;
@@ -11,7 +9,7 @@ var LineStream = require('byline').LineStream;
 var PHONE_REGEX = /'^\+\d{10}$'/;
 var EMAIL_REGEX = /^\S+@\S+$/; // simple email regex
 
-var user = execSync('whoami');
+var user = process.env.USER;
 
 var SCRIPT_PATH = '/Users/' + user + '/Library/Application Scripts/com.apple.iChat/osa-imessage-' + uuid + '.applescript';
 var FIFO_PATH   = '/tmp/osa-imessage-' + uuid + '.fifo';
@@ -44,7 +42,7 @@ var startFIFORead = function() {
     proc.stdout.pipe(new LineStream()).on('data', function(data) {
         var replacements = /[�\0]/g;
         data = JSON.parse(data.toString().replace(replacements, ""));
-        
+
         newMessages.emit('received', data);
     });
 };
@@ -84,7 +82,7 @@ iMessage.getContact = function(input, cb) {
 };
 
 iMessage.listen = function() {
-    mkfifo(FIFO_PATH, 0755);
+    // TODO: Broken. execSync('mkfifo' + FIFO_PATH, 0755);
 
     var fd = fs.openSync(SCRIPT_PATH, 'w');
     fs.writeSync(fd, listenScript, 0, listenScript.length);
