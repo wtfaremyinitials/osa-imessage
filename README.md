@@ -7,9 +7,7 @@ osa-imessage
 ![](https://img.shields.io/npm/v/osa-imessage.svg)
 ![](https://img.shields.io/npm/l/osa-imessage.svg)
 
-A node.js module to interact with iMessage.
-
-Developed for the [webmessage](https://github.com/wtfaremyinitials/webmessage) project that aims to bring an iMessage client to the browser
+> Send ~~and receive~~  iMessages through node
 
 Installation
 ===
@@ -23,7 +21,7 @@ npm install osa-imessage
 Usage
 ====
 
-###*Sending messages*
+## Sending messages
 
 **Send a message to a phone number:**
 ```js
@@ -46,20 +44,6 @@ var messages = require('osa-imessage');
 messages.send('Hello World!', 'john@icloud.com', callback);
 ```
 
-###*Receiving messages*
+## Receiving messages
 
-```js
-var messages = require('osa-imessage');
-
-var messageEvents = messages.listen();
-
-// After messages.listen() is called, osa-imessage must be set
-// as the AppleScript handler in Messages.app's preferences page
-
-messageEvents.on('received', function(data){
-    var message = data.text;           // "Hello, World!"
-    var fromName = data.from.name;     // "Johnny Appleseed"
-    var fromHandle = data.from.handle; // "john@icloud.com"
-    var time = data.time;              //  Timestamp
-});
-```
+Apple broke the API I was using for this ¯\\_(ツ)_/¯
