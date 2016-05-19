@@ -5,7 +5,7 @@ var spawn = require('child_process').spawn;
 var EventEmitter = require("events").EventEmitter;
 var LineStream = require('byline').LineStream;
 
-var PHONE_REGEX = /^\+\d{10}$/;
+var PHONE_REGEX = /^\+\d{3,}$/;
 var EMAIL_REGEX = /^\S+@\S+$/;
 
 var parse = function(input) {
