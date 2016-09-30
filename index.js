@@ -1,47 +1,47 @@
-var fs = require('fs');
-var osa = require('osa');
-var spawn = require('child_process').spawn;
+var fs = require('fs')
+var osa = require('osa')
+var spawn = require('child_process').spawn
 
-var EventEmitter = require("events").EventEmitter;
-var LineStream = require('byline').LineStream;
+var EventEmitter = require("events").EventEmitter
+var LineStream = require('byline').LineStream
 
-var PHONE_REGEX = /^\+\d{3,}$/;
-var EMAIL_REGEX = /^\S+@\S+$/;
+var PHONE_REGEX = /^\+\d{3,}$/
+var EMAIL_REGEX = /^\S+@\S+$/
 
 var parse = function(input) {
     if(typeof(input) == 'undefined')
-        return '';
+        return ''
     else if(typeof(input) == 'object')
-        return input;
+        return input
     else if(input.match(PHONE_REGEX) || input.match(EMAIL_REGEX))
-        return { handle: input };
+        return { handle: input }
     else
-        return { name: input };
-    return '';
-};
+        return { name: input }
+    return ''
+}
 
-var iMessage = {};
+var iMessage = {}
 
 iMessage.send = function(message, to, cb) {
-    var recipient = parse(to);
-    cb = cb || function(){};
+    var recipient = parse(to)
+    cb = cb || function(){}
 
     osa(function(message, recipient) {
-        var Messages = Application('Messages');
-        recipient = Messages.buddies.whose(recipient)[0];
+        var Messages = Application('Messages')
+        recipient = Messages.buddies.whose(recipient)[0]
 
-        Messages.send(message, { to: recipient });
+        Messages.send(message, { to: recipient })
 
         return {
             name:   recipient.name(),
             handle: recipient.handle()
-        };
-    }, message, recipient, cb);
-};
+        }
+    }, message, recipient, cb)
+}
 
 iMessage.getContact = function(input, cb) {
-    var search = parse(input);
-    cb = cb || function(){};
+    var search = parse(input)
+    cb = cb || function(){}
 
     osa(function(search) {
         var Messages = Application('Messages');
@@ -50,8 +50,8 @@ iMessage.getContact = function(input, cb) {
         return {
             name:   found.name(),
             handle: found.handle()
-        };
-    }, search, cb);
-};
+        }
+    }, search, cb)
+}
 
-module.exports = iMessage;
+module.exports = iMessage

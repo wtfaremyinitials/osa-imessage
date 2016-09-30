@@ -16,17 +16,18 @@
   "dependencies": {
     "byline": "^4.1.1",
     "node-uuid": "^1.4.1",
-    "osa": "^2.0.1"
-   },
-   "keywords": [
-       "messages",
-       "osx",
-       "yosemite",
-       "jxa",
-       "osa",
-       "imessage",
-       "sms",
-       "send",
-       "receive"
-   ]
+    "osa": "^2.0.1",
+    "sqlite3": "^3.1.4"
+  },
+  "keywords": [
+    "messages",
+    "osx",
+    "yosemite",
+    "jxa",
+    "osa",
+    "imessage",
+    "sms",
+    "send",
+    "receive"
+  ]
 }
