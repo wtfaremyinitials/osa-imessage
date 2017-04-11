@@ -65,8 +65,9 @@ function listen() {
     )
 
     var last = appleTimeNow()
+    var bail = false
 
-    var intv = setInterval(() => {
+    function check() {
         var query = `
             SELECT guid, id as handle, text, date, date_read, is_from_me
             FROM message
@@ -74,9 +75,11 @@ function listen() {
             WHERE date >= ${last}
         `
 
+        last = appleTimeNow()
+
         db.each(query, (err, row) => {
             if (err) {
-                clearInterval(intv)
+                bail = true
                 emitter.emit('error', err)
                 console.error([
                     'sqlite3 returned an error while polling for new message!',
@@ -93,10 +96,14 @@ function listen() {
                 date: fromAppleTime(row.date),
                 dateRead: fromAppleTime(row.date_read)
             })  
+        }, () => {
+            if (bail) return
+            setTimeout(check , 1000)
         })
 
-        last = appleTimeNow()
-    }, 1000)
+    }
+
+    check()
 
     return emitter
 }
