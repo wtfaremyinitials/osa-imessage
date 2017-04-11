@@ -15,6 +15,24 @@ Installation
 ```bash
 npm install osa-imessage
 ```
+Usage
+====
+
+**Send a message:**
+```js
+var imessage = require('osa-imessage')
+
+imessage.send('+15555555555', 'Hello World!')
+```
+
+**Receive messages:**
+```js
+var imessage = require('osa-imessage')
+
+imessage.listen().on('message', (msg) => {
+    console.log(`'${msg.text}' from ${msg.handle}`)
+})
+```
 
 API
 ===
@@ -72,23 +90,4 @@ Example message event
     fromMe: false,
     guid: 'F79E08A5-4314-43B2-BB32-563A2BB76177'
 }
-```
-
-Usage
-====
-
-**Send a message:**
-```js
-var imessage = require('osa-imessage')
-
-imessage.send('+15555555555', 'Hello World!')
-```
-
-**Receive messages:**
-```js
-var imessage = require('osa-imessage')
-
-imessage.listen().on('message', (msg) => {
-    console.log(`'${msg.text}' from ${msg.handle}`)
-})
 ```
