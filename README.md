@@ -1,5 +1,3 @@
-![osa-imessage](https://raw.githubusercontent.com/wtfaremyinitials/osa-imessage/master/resources/logowithtext.png)
-
 osa-imessage
 ====
 
