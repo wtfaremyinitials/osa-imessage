@@ -18,14 +18,14 @@ npm install osa-imessage
 Usage
 ====
 
-**Send a message:**
+**Send a message**
 ```js
 var imessage = require('osa-imessage')
 
 imessage.send('+15555555555', 'Hello World!')
 ```
 
-**Receive messages:**
+**Receive messages**
 ```js
 var imessage = require('osa-imessage')
 
@@ -77,7 +77,7 @@ The rate at which the database is polled for new messages. Defaults to the minim
 
 **return**
 
-Type: `EventEmitter`
+Type: [`EventEmitter`](https://nodejs.org/api/events.html#events_class_eventemitter)
 
 An event emitter with that listeners can be attached to. Currently it only has the `message` event.
 
