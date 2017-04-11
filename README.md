@@ -5,43 +5,90 @@ osa-imessage
 ![](https://img.shields.io/npm/v/osa-imessage.svg)
 ![](https://img.shields.io/npm/l/osa-imessage.svg)
 
-> Send ~~and receive~~  iMessages through node
+> Send and receive iMessages through nodejs
 
 Installation
 ===
 
-**Requires OSX 10.10 Yosemite.**
+**Requires OSX 10.10 Yosemite**
 
 ```bash
 npm install osa-imessage
 ```
 
+API
+===
+
+### Send a message
+
+`send(handle, text) -> Promise`
+
+Sends a message to the specified handle.
+
+**handle**
+
+Type: `string`
+
+The user to send the message to, in the form of an email address or a
+phone number in the format `+1555555555`.
+
+**text** 
+
+Type: `string`
+
+The content of the message to be sent.
+
+**return**
+
+Type: `Promise<>`
+
+A promise that resolves when the message is sent, and rejects if the
+message fails to send.
+
+### Receive messages
+
+`listen([interval]) -> EventEmitter`
+
+Begins polling the local iMessage database for new messages.
+
+**interval**
+
+Type: `number`
+
+The rate at which the database is polled for new messages. Defaults to the minimum of `1000 ms`.
+
+**return**
+
+Type: `EventEmitter`
+
+An event emitter with that listeners can be attached to. Currently it only has the `message` event.
+
+Example message event
+```js
+{
+    text: 'Hello, world!',
+    handle: '+15555555555',
+    date: new Date('2017-04-11T02:02:13.000Z'),
+    fromMe: false,
+    guid: 'F79E08A5-4314-43B2-BB32-563A2BB76177'
+}
+```
+
 Usage
 ====
 
-## Sending messages
-
-**Send a message to a phone number:**
+**Send a message:**
 ```js
-var messages = require('osa-imessage');
+var imessage = require('osa-imessage')
 
-messages.send('Hello World!', '+15555555555', callback);
+imessage.send('+15555555555', 'Hello World!')
 ```
 
-**Send a message to a contact:**
+**Receive messages:**
 ```js
-var messages = require('osa-imessage');
+var imessage = require('osa-imessage')
 
-messages.send('Hello World!', 'Johnny Appleseed', callback);
+imessage.listen().on('message', (msg) => {
+    console.log(`'${msg.text}' from ${msg.handle}`)
+})
 ```
-
-**Send a message to an iCloud account:**
-```js
-var messages = require('osa-imessage');
-
-messages.send('Hello World!', 'john@icloud.com', callback);
-```
-
-## Receiving messages
-
-Apple broke the API I was using for this ¯\\_(ツ)_/¯
