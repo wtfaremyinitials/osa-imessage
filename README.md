@@ -15,6 +15,7 @@ Installation
 ```bash
 npm install osa-imessage
 ```
+
 Usage
 ====
 
@@ -91,3 +92,19 @@ Example message event
     guid: 'F79E08A5-4314-43B2-BB32-563A2BB76177'
 }
 ```
+
+### Get a handle for a given name
+
+`handleForName(name) -> Promise<handle>`
+
+**name**
+
+Type: `string`
+
+The full name of the desired contact, as displayed in `Messages.app`.
+
+**return**
+
+Type: `Promise<string>`
+
+A promise that resolves with the `handle` of the contact, or rejects if nobody was found.
