@@ -48,6 +48,7 @@ function send(handle, message) {
 }
 
 var emitter = null
+var guids = []
 function listen() {
     // If listen has already been run, return the existing emitter
     if (emitter != null) {
@@ -86,6 +87,12 @@ function listen() {
                     'bailing out of poll routine for safety. new messages will',
                     'not be detected'
                 ].join('\n'))
+            }
+
+            if (guids.indexOf(row.guid) != -1) {
+                return
+            } else {
+                guids.push(row.guid)
             }
 
             emitter.emit('message', {
