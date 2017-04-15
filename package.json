@@ -24,8 +24,12 @@
     "send",
     "receive"
   ],
-  "engines": { "node": ">=5.12" },
+  "engines": {
+    "node": ">=6.4"
+  },
   "dependencies": {
+    "macos-version": "^4.0.0",
+    "one-liner": "^1.0.3",
     "osa2": "^0.0.0"
   },
   "optionalDependencies": {

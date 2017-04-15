@@ -1,7 +1,26 @@
 var fs = require('fs')
 var osa = require('osa2')
+var ol = require('one-liner')
 
-// TODO: Check macOS version
+var versions = require('./macos_versions')
+var currentVersion = require('macos-version')()
+
+if (versions.broken.includes(currentVersion)) {
+    console.error(ol(
+        `This version of macOS \(${currentVersion}) is known to be
+         incompatible with osa-imessage. Please upgrade either
+         macOS or osa-imessage.`
+    ))
+    process.exit(1)
+}
+
+if (!versions.working.includes(currentVersion)) {
+    console.warn(ol(
+        `This version of macOS \(${currentVersion}) is currently
+         untested with this version of osa-imessage. Proceed with
+         caution.`
+    ))
+}
 
 // Instead of doing something reasonable, Apple stores dates as the number of
 // seconds since 01-01-2001 00:00:00 GMT. DATE_OFFSET is the offset in seconds
