@@ -13,7 +13,7 @@ Installation
 **Requires OSX 10.10 Yosemite**
 
 ```bash
-npm install osa-imessage
+npm install osa-imessage --save
 ```
 
 Usage
@@ -32,6 +32,15 @@ var imessage = require('osa-imessage')
 
 imessage.listen().on('message', (msg) => {
     console.log(`'${msg.text}' from ${msg.handle}`)
+})
+```
+
+**Send message to name**
+```js
+var imessage = require('osa-imessage')
+
+imessage.handleForName('Tim Cook').then(handle => {
+    imessage.send(handle, 'Hello')
 })
 ```
 
