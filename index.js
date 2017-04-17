@@ -55,7 +55,7 @@ function handleForName(name) {
         var Messages = Application('Messages')
         return Messages.buddies.whose({ name: name })[0].handle()
     })(name)
-} 
+}
 
 // Sends a message to the given handle
 function send(handle, message) {
@@ -78,7 +78,7 @@ function listen() {
     var emitter = new (require('events').EventEmitter)()
 
     // Set up the database
-    var sqlite = requireSqlite() 
+    var sqlite = requireSqlite()
     var db = new sqlite.Database(
         process.env.HOME + '/Library/Messages/chat.db',
         sqlite.OPEN_READONLY
@@ -121,7 +121,7 @@ function listen() {
                 fromMe: !!row.is_from_me,
                 date: fromAppleTime(row.date),
                 dateRead: fromAppleTime(row.date_read)
-            })  
+            })
         }, () => {
             if (bail) return
             setTimeout(check , 1000)

@@ -51,7 +51,7 @@ Type: `string`
 The user to send the message to, in the form of an email address or a
 phone number in the format `+1555555555`.
 
-**text** 
+**text**
 
 Type: `string`
 
