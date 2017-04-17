@@ -1,6 +1,7 @@
 var fs = require('fs')
 var osa = require('osa2')
 var ol = require('one-liner')
+var assert = require('assert')
 
 var versions = require('./macos_versions')
 var currentVersion = require('macos-version')()
@@ -51,6 +52,7 @@ function requireSqlite() {
 
 // Gets the proper handle string for a contact with the given name
 function handleForName(name) {
+    assert(typeof name == 'string', 'name must be a string')
     return osa((name) => {
         var Messages = Application('Messages')
         return Messages.buddies.whose({ name: name })[0].handle()
@@ -59,6 +61,8 @@ function handleForName(name) {
 
 // Sends a message to the given handle
 function send(handle, message) {
+    assert(typeof handle  == 'string', 'handle must be a string')
+    assert(typeof message == 'string', 'message must be a string')
     return osa((handle, message) => {
         var Messages = Application('Messages')
         var buddy = Messages.buddies.whose({ handle: handle })[0]
