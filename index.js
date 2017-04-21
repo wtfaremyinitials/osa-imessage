@@ -96,7 +96,7 @@ function listen() {
             SELECT guid, id as handle, text, date, date_read, is_from_me
             FROM message
             JOIN handle ON message.handle_id = handle.ROWID
-            WHERE date >= ${last}
+            WHERE date >= ${last - 5}
         `
 
         last = appleTimeNow()
