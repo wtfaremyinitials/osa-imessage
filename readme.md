@@ -98,7 +98,19 @@ The rate at which the database is polled for new messages. Defaults to the minim
 
 Type: [`EventEmitter`](https://nodejs.org/api/events.html#events_class_eventemitter)
 
-An event emitter with that listeners can be attached to. Currently it only has the `message` event.
+Use the `message` event to listen for all new messages.
+
+`.on('message', () => { ... })`
+
+To listen for messages associated with a specific handle, pass it in place of `'message'`.
+
+`.on('+15555555555', () => { ... })`
+
+To ignore messages where `fromMe == true`, add `'!me'` to the end of the event name.
+
+
+`.on('message!me', () => { ... })`,
+`.on('chat000000000000000000!me', () => { ... })`
 
 Example message event
 ```js
