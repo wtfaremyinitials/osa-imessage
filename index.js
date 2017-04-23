@@ -144,7 +144,6 @@ function listen() {
                 text: row.text,
                 handle: row.handle,
                 group: row.cache_roomnames,
-                replyTo: row.cache_roomnames || row.handle,
                 fromMe: !!row.is_from_me,
                 date: fromAppleTime(row.date),
                 dateRead: fromAppleTime(row.date_read)
