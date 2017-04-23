@@ -44,6 +44,13 @@ imessage.handleForName('Tim Cook').then(handle => {
 })
 ```
 
+**Send message to group**
+```js
+var imessage = require('osa-imessage')
+
+imessage.send('chat000000000000000000', 'Hello everyone!')
+```
+
 API
 ===
 
@@ -57,8 +64,10 @@ Sends a message to the specified handle.
 
 Type: `string`
 
-The user to send the message to, in the form of an email address or a
-phone number in the format `+1555555555`.
+The user or group to send the message to, in one of the following forms:
+- phone number (`+1555555555`)
+- email address (`user@example.com`)
+- group chat id (`chat000000000000000000`)
 
 **text**
 
@@ -96,9 +105,22 @@ Example message event
 {
     text: 'Hello, world!',
     handle: '+15555555555',
+    group: null,
     date: new Date('2017-04-11T02:02:13.000Z'),
     fromMe: false,
     guid: 'F79E08A5-4314-43B2-BB32-563A2BB76177'
+}
+```
+
+Example *group* message event
+```js
+{
+    text: 'Hello, group!',
+    handle: '+15555555555',
+    group: 'chat000000000000000000',
+    date: new Date('2017-04-23T21:18:54.943Z'),
+    fromMe: false,
+    guid: 'DCFE0EEC-F9DD-48FC-831B-06C75B76ACB9'
 }
 ```
 
