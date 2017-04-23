@@ -139,7 +139,7 @@ function listen() {
                 guids.push(row.guid)
             }
 
-            emitter.emit('message', {
+            var event = {
                 guid: row.guid,
                 text: row.text,
                 handle: row.handle,
@@ -147,7 +147,17 @@ function listen() {
                 fromMe: !!row.is_from_me,
                 date: fromAppleTime(row.date),
                 dateRead: fromAppleTime(row.date_read)
-            })
+            }
+
+            var thread = event.group || event.handle,
+
+            emitter.emit('message', event)
+            emitter.emit(thread, event)
+
+            if (!event.fromMe) {
+                emitter.emit('message!me', event)
+                emitter.emit(thread+'!me', event)
+            }
         }, () => {
             if (bail) return
             setTimeout(check , 1000)
