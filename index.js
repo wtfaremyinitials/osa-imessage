@@ -65,8 +65,22 @@ function send(handle, message) {
     assert(typeof message == 'string', 'message must be a string')
     return osa((handle, message) => {
         var Messages = Application('Messages')
-        var buddy = Messages.buddies.whose({ handle: handle })[0]
-        Messages.send(message, { to: buddy })
+
+        var target;
+
+        try {
+            target = Messages.buddies.whose({ handle: handle })[0]
+        } catch(e) {}
+
+        try {
+            target = Messages.textChats.byId('iMessage;+;'+handle)()
+        } catch (e) {}
+
+        try {
+            Messages.send(message, { to: target })
+        } catch (e) {
+            throw new Error(`no thread with handle '${handle}'`)
+        }
     })(handle, message)
 }
 
@@ -93,9 +107,16 @@ function listen() {
 
     function check() {
         var query = `
-            SELECT guid, id as handle, text, date, date_read, is_from_me
+            SELECT
+                guid,
+                id as handle,
+                text,
+                date,
+                date_read,
+                is_from_me,
+                cache_roomnames
             FROM message
-            JOIN handle ON message.handle_id = handle.ROWID
+            LEFT OUTER JOIN handle ON message.handle_id = handle.ROWID
             WHERE date >= ${last - 5}
         `
 
@@ -122,6 +143,7 @@ function listen() {
                 guid: row.guid,
                 text: row.text,
                 handle: row.handle,
+                group: row.cache_roomnames,
                 fromMe: !!row.is_from_me,
                 date: fromAppleTime(row.date),
                 dateRead: fromAppleTime(row.date_read)
