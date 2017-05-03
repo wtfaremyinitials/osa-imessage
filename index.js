@@ -7,20 +7,20 @@ var versions = require('./macos_versions')
 var currentVersion = require('macos-version')()
 
 if (versions.broken.includes(currentVersion)) {
-    console.error(ol(
-        `This version of macOS \(${currentVersion}) is known to be
+    console.error(
+        ol(`This version of macOS \(${currentVersion}) is known to be
          incompatible with osa-imessage. Please upgrade either
-         macOS or osa-imessage.`
-    ))
+         macOS or osa-imessage.`)
+    )
     process.exit(1)
 }
 
 if (!versions.working.includes(currentVersion)) {
-    console.warn(ol(
-        `This version of macOS \(${currentVersion}) is currently
+    console.warn(
+        ol(`This version of macOS \(${currentVersion}) is currently
          untested with this version of osa-imessage. Proceed with
-         caution.`
-    ))
+         caution.`)
+    )
 }
 
 // Instead of doing something reasonable, Apple stores dates as the number of
@@ -46,14 +46,16 @@ function requireSqlite() {
     try {
         return require('sqlite3')
     } catch (e) {
-        throw new Error('sqlite3 optional dependency required to receive messages')
+        throw new Error(
+            'sqlite3 optional dependency required to receive messages'
+        )
     }
 }
 
 // Gets the proper handle string for a contact with the given name
 function handleForName(name) {
     assert(typeof name == 'string', 'name must be a string')
-    return osa((name) => {
+    return osa(name => {
         var Messages = Application('Messages')
         return Messages.buddies.whose({ name: name })[0].handle()
     })(name)
@@ -61,19 +63,19 @@ function handleForName(name) {
 
 // Sends a message to the given handle
 function send(handle, message) {
-    assert(typeof handle  == 'string', 'handle must be a string')
+    assert(typeof handle == 'string', 'handle must be a string')
     assert(typeof message == 'string', 'message must be a string')
     return osa((handle, message) => {
         var Messages = Application('Messages')
 
-        var target;
+        var target
 
         try {
             target = Messages.buddies.whose({ handle: handle })[0]
-        } catch(e) {}
+        } catch (e) {}
 
         try {
-            target = Messages.textChats.byId('iMessage;+;'+handle)()
+            target = Messages.textChats.byId('iMessage;+;' + handle)()
         } catch (e) {}
 
         try {
@@ -122,37 +124,40 @@ function listen() {
 
         last = appleTimeNow()
 
-        db.each(query, (err, row) => {
-            if (err) {
-                bail = true
-                emitter.emit('error', err)
-                console.error([
-                    'sqlite3 returned an error while polling for new message!',
-                    'bailing out of poll routine for safety. new messages will',
-                    'not be detected'
-                ].join('\n'))
+        db.each(
+            query,
+            (err, row) => {
+                if (err) {
+                    bail = true
+                    emitter.emit('error', err)
+                    console.error(
+                        ol(`sqlite3 returned an error while polling for new message!
+                    bailing out of poll routine for safety. new messages will
+                    not be detected`)
+                    )
+                }
+
+                if (guids.indexOf(row.guid) != -1) {
+                    return
+                } else {
+                    guids.push(row.guid)
+                }
+
+                emitter.emit('message', {
+                    guid: row.guid,
+                    text: row.text,
+                    handle: row.handle,
+                    group: row.cache_roomnames,
+                    fromMe: !!row.is_from_me,
+                    date: fromAppleTime(row.date),
+                    dateRead: fromAppleTime(row.date_read),
+                })
+            },
+            () => {
+                if (bail) return
+                setTimeout(check, 1000)
             }
-
-            if (guids.indexOf(row.guid) != -1) {
-                return
-            } else {
-                guids.push(row.guid)
-            }
-
-            emitter.emit('message', {
-                guid: row.guid,
-                text: row.text,
-                handle: row.handle,
-                group: row.cache_roomnames,
-                fromMe: !!row.is_from_me,
-                date: fromAppleTime(row.date),
-                dateRead: fromAppleTime(row.date_read)
-            })
-        }, () => {
-            if (bail) return
-            setTimeout(check , 1000)
-        })
-
+        )
     }
 
     check()
