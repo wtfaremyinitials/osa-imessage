@@ -22,14 +22,14 @@ Usage
 
 **Send a message**
 ```js
-var imessage = require('osa-imessage')
+const imessage = require('osa-imessage')
 
 imessage.send('+15555555555', 'Hello World!')
 ```
 
 **Receive messages**
 ```js
-var imessage = require('osa-imessage')
+const imessage = require('osa-imessage')
 
 imessage.listen().on('message', (msg) => {
     console.log(`'${msg.text}' from ${msg.handle}`)
@@ -38,7 +38,7 @@ imessage.listen().on('message', (msg) => {
 
 **Send message to name**
 ```js
-var imessage = require('osa-imessage')
+const imessage = require('osa-imessage')
 
 imessage.handleForName('Tim Cook').then(handle => {
     imessage.send(handle, 'Hello')
@@ -47,7 +47,7 @@ imessage.handleForName('Tim Cook').then(handle => {
 
 **Send message to group**
 ```js
-var imessage = require('osa-imessage')
+const imessage = require('osa-imessage')
 
 imessage.send('chat000000000000000000', 'Hello everyone!')
 ```

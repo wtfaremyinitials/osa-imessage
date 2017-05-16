@@ -1,10 +1,10 @@
-var fs = require('fs')
-var osa = require('osa2')
-var ol = require('one-liner')
-var assert = require('assert')
+const fs = require('fs')
+const osa = require('osa2')
+const ol = require('one-liner')
+const assert = require('assert')
 
-var versions = require('./macos_versions')
-var currentVersion = require('macos-version')()
+const versions = require('./macos_versions')
+const currentVersion = require('macos-version')()
 
 if (versions.broken.includes(currentVersion)) {
     console.error(
@@ -26,7 +26,7 @@ if (!versions.working.includes(currentVersion)) {
 // Instead of doing something reasonable, Apple stores dates as the number of
 // seconds since 01-01-2001 00:00:00 GMT. DATE_OFFSET is the offset in seconds
 // between their epoch and unix time
-var DATE_OFFSET = 978307200
+const DATE_OFFSET = 978307200
 
 // Gets the current Apple-style timestamp
 function appleTimeNow() {
@@ -56,7 +56,7 @@ function requireSqlite() {
 function handleForName(name) {
     assert(typeof name == 'string', 'name must be a string')
     return osa(name => {
-        var Messages = Application('Messages')
+        const Messages = Application('Messages')
         return Messages.buddies.whose({ name: name })[0].handle()
     })(name)
 }
@@ -66,9 +66,9 @@ function send(handle, message) {
     assert(typeof handle == 'string', 'handle must be a string')
     assert(typeof message == 'string', 'message must be a string')
     return osa((handle, message) => {
-        var Messages = Application('Messages')
+        const Messages = Application('Messages')
 
-        var target
+        let target
 
         try {
             target = Messages.buddies.whose({ handle: handle })[0]
@@ -86,8 +86,8 @@ function send(handle, message) {
     })(handle, message)
 }
 
-var emitter = null
-var guids = []
+let emitter = null
+let guids = []
 function listen() {
     // If listen has already been run, return the existing emitter
     if (emitter != null) {
@@ -95,20 +95,20 @@ function listen() {
     }
 
     // Create an EventEmitter
-    var emitter = new (require('events').EventEmitter)()
+    emitter = new (require('events').EventEmitter)()
 
     // Set up the database
-    var sqlite = requireSqlite()
-    var db = new sqlite.Database(
+    const sqlite = requireSqlite()
+    const db = new sqlite.Database(
         process.env.HOME + '/Library/Messages/chat.db',
         sqlite.OPEN_READONLY
     )
 
-    var last = appleTimeNow()
-    var bail = false
+    let last = appleTimeNow()
+    let bail = false
 
     function check() {
-        var query = `
+        const query = `
             SELECT
                 guid,
                 id as handle,
