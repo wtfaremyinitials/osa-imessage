@@ -1,4 +1,4 @@
-var imessage = require('..')
+const imessage = require('..')
 
 imessage.listen().on('message', (msg) => {
     if (!msg.fromMe) {
