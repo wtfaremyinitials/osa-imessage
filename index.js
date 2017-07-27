@@ -34,11 +34,23 @@ function appleTimeNow() {
 }
 
 // Transforms an Apple-style timestamp to a proper unix timestamp
-function fromAppleTime(at) {
-    if (at == 0) {
+function fromAppleTime(ts) {
+    if (ts == 0) {
         return null
     }
-    return new Date((at + DATE_OFFSET) * 1000)
+
+    // unpackTime returns 0 if the timestamp wasn't packed
+    if (unpackTime(ts) != 0) {
+        ts = unpackTime(ts)
+    }
+
+    return new Date((ts + DATE_OFFSET) * 1000)
+}
+
+// Since macOS 10.13 High Sierra, some timestamps appear to have extra data
+// packed. Dividing by 10^9 seems to get an Apple-style timestamp back.
+function unpackTime(ts) {
+    return Math.floor(ts / Math.pow(10, 9))
 }
 
 // Attempt to require in optional dep sqlite with a more helpful error message
