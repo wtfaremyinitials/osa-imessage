@@ -107,7 +107,7 @@ function listen() {
     }
 
     // Create an EventEmitter
-    emitter = new (require('events').EventEmitter)()
+    emitter = new (require('events')).EventEmitter()
 
     // Set up the database
     const sqlite = requireSqlite()
