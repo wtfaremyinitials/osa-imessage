@@ -1,44 +1,50 @@
 {
-  "name": "osa-imessage",
-  "version": "2.1.1",
-  "description": "Bring the power of NodeJS to Apple iMessage",
-  "author": {
-    "name": "Will Franzen",
-    "email": "wtfranzen@gmail.com",
-    "url": "http://will.xyz"
-  },
-  "scripts": {
-    "fmt": "prettier --write --single-quote --no-semi --tab-width 4 --trailing-comma es5 '*.js'"
-  },
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/wtfaremyinitials/osa-imessage.git"
-  },
-  "main": "index.js",
-  "keywords": [
-    "messages",
-    "osx",
-    "yosemite",
-    "jxa",
-    "osa",
-    "imessage",
-    "sms",
-    "send",
-    "receive"
-  ],
-  "engines": {
-    "node": ">=6.4"
-  },
-  "dependencies": {
-    "macos-version": "^4.0.0",
-    "one-liner": "^1.0.3",
-    "osa2": "^0.0.0"
-  },
-  "optionalDependencies": {
-    "sqlite3": "^3.1.8"
-  },
-  "devDependencies": {
-    "prettier": "^1.3.0"
-  }
+    "name": "osa-imessage",
+    "version": "2.1.2",
+    "description": "Bring the power of NodeJS to Apple iMessage",
+    "author": {
+        "name": "Will Franzen",
+        "email": "wtfranzen@gmail.com",
+        "url": "http://will.xyz"
+    },
+    "scripts": {
+        "fmt": "prettier --write '*.js'"
+    },
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/wtfaremyinitials/osa-imessage.git"
+    },
+    "main": "index.js",
+    "keywords": [
+        "messages",
+        "osx",
+        "yosemite",
+        "jxa",
+        "osa",
+        "imessage",
+        "sms",
+        "send",
+        "receive"
+    ],
+    "engines": {
+        "node": ">=6.4"
+    },
+    "dependencies": {
+        "macos-version": "^4.0.0",
+        "one-liner": "^1.0.3",
+        "osa2": "^0.0.0"
+    },
+    "optionalDependencies": {
+        "sqlite3": "^3.1.8"
+    },
+    "devDependencies": {
+        "prettier": "^1.3.0"
+    },
+    "prettier": {
+        "semi": false,
+        "singleQuote": true,
+        "tabWidth": 4,
+        "trailingComma": "es5"
+    }
 }
