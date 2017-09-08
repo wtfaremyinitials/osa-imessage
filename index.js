@@ -6,11 +6,13 @@ const assert = require('assert')
 const versions = require('./macos_versions')
 const currentVersion = require('macos-version')()
 
+const messagesDb = require('./lib/messages-db.js')
+
 if (versions.broken.includes(currentVersion)) {
     console.error(
         ol(`This version of macOS \(${currentVersion}) is known to be
-         incompatible with osa-imessage. Please upgrade either
-         macOS or osa-imessage.`)
+            incompatible with osa-imessage. Please upgrade either
+            macOS or osa-imessage.`)
     )
     process.exit(1)
 }
@@ -18,8 +20,8 @@ if (versions.broken.includes(currentVersion)) {
 if (!versions.working.includes(currentVersion)) {
     console.warn(
         ol(`This version of macOS \(${currentVersion}) is currently
-         untested with this version of osa-imessage. Proceed with
-         caution.`)
+            untested with this version of osa-imessage. Proceed with
+            caution.`)
     )
 }
 
@@ -51,17 +53,6 @@ function fromAppleTime(ts) {
 // packed. Dividing by 10^9 seems to get an Apple-style timestamp back.
 function unpackTime(ts) {
     return Math.floor(ts / Math.pow(10, 9))
-}
-
-// Attempt to require in optional dep sqlite with a more helpful error message
-function requireSqlite() {
-    try {
-        return require('sqlite3')
-    } catch (e) {
-        throw new Error(
-            'sqlite3 optional dependency required to receive messages'
-        )
-    }
 }
 
 // Gets the proper handle string for a contact with the given name
@@ -99,7 +90,7 @@ function send(handle, message) {
 }
 
 let emitter = null
-let guids = []
+let emittedMsgs = []
 function listen() {
     // If listen has already been run, return the existing emitter
     if (emitter != null) {
@@ -109,17 +100,10 @@ function listen() {
     // Create an EventEmitter
     emitter = new (require('events')).EventEmitter()
 
-    // Set up the database
-    const sqlite = requireSqlite()
-    const db = new sqlite.Database(
-        process.env.HOME + '/Library/Messages/chat.db',
-        sqlite.OPEN_READONLY
-    )
-
     let last = appleTimeNow()
     let bail = false
 
-    function check() {
+    async function check() {
         const query = `
             SELECT
                 guid,
@@ -133,48 +117,61 @@ function listen() {
             LEFT OUTER JOIN handle ON message.handle_id = handle.ROWID
             WHERE date >= ${last - 5}
         `
-
         last = appleTimeNow()
 
-        db.each(
-            query,
-            (err, row) => {
-                if (err) {
-                    bail = true
-                    emitter.emit('error', err)
-                    console.error(
-                        ol(`sqlite3 returned an error while polling for new message!
+        try {
+            const db = await messagesDb.open()
+            const messages = await db.all(query)
+            messages.forEach(msg => {
+                if (emittedMsgs[msg.guid]) return
+                emittedMsgs[msg.guid] = true
+                emitter.emit('message', {
+                    guid: msg.guid,
+                    text: msg.text,
+                    handle: msg.handle,
+                    group: msg.cache_roomnames,
+                    fromMe: !!msg.is_from_me,
+                    date: fromAppleTime(msg.date),
+                    dateRead: fromAppleTime(msg.date_read),
+                })
+            })
+            setTimeout(check, 1000)
+        } catch (error) {
+            bail = true
+            emitter.emit('error', err)
+            console.error(
+                ol(`sqlite returned an error while polling for new messages!
                     bailing out of poll routine for safety. new messages will
                     not be detected`)
-                    )
-                }
-
-                if (guids.indexOf(row.guid) != -1) {
-                    return
-                } else {
-                    guids.push(row.guid)
-                }
-
-                emitter.emit('message', {
-                    guid: row.guid,
-                    text: row.text,
-                    handle: row.handle,
-                    group: row.cache_roomnames,
-                    fromMe: !!row.is_from_me,
-                    date: fromAppleTime(row.date),
-                    dateRead: fromAppleTime(row.date_read),
-                })
-            },
-            () => {
-                if (bail) return
-                setTimeout(check, 1000)
-            }
-        )
+            )
+        }
     }
 
+    if (bail) return
     check()
 
     return emitter
 }
 
-module.exports = { send, listen, handleForName }
+async function getRecentChats(limit = 10) {
+    const db = await messagesDb.open()
+
+    const query = `
+        SELECT
+            guid as id,
+            chat_identifier as recipientId,
+            service_name as serviceName,
+            room_name as roomName,
+            display_name as displayName
+        FROM chat
+        JOIN chat_handle_join ON chat_handle_join.chat_id = chat.ROWID
+        JOIN handle ON handle.ROWID = chat_handle_join.handle_id
+        ORDER BY handle.rowid DESC
+        LIMIT ${limit};
+    `
+
+    const chats = await db.all(query)
+    return chats
+}
+
+module.exports = { send, listen, handleForName, getRecentChats }

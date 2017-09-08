@@ -20,17 +20,19 @@ npm install osa-imessage --save
 Usage
 ====
 
-**Send a message**
+Be sure to require `osa-imessage`:
+
 ```js
 const imessage = require('osa-imessage')
+```
 
+**Send a message**
+```js
 imessage.send('+15555555555', 'Hello World!')
 ```
 
 **Receive messages**
 ```js
-const imessage = require('osa-imessage')
-
 imessage.listen().on('message', (msg) => {
     console.log(`'${msg.text}' from ${msg.handle}`)
 })
@@ -38,8 +40,6 @@ imessage.listen().on('message', (msg) => {
 
 **Send message to name**
 ```js
-const imessage = require('osa-imessage')
-
 imessage.handleForName('Tim Cook').then(handle => {
     imessage.send(handle, 'Hello')
 })
@@ -47,9 +47,12 @@ imessage.handleForName('Tim Cook').then(handle => {
 
 **Send message to group**
 ```js
-const imessage = require('osa-imessage')
-
 imessage.send('chat000000000000000000', 'Hello everyone!')
+```
+
+**Get recent chats**
+```js
+imessage.getRecentChats(20) // Defaults to 10
 ```
 
 API
@@ -140,3 +143,19 @@ The full name of the desired contact, as displayed in `Messages.app`.
 Type: `Promise<string>`
 
 A promise that resolves with the `handle` of the contact, or rejects if nobody was found.
+
+### Get recents chats
+
+`getRecentChats(limit) -> Promise`
+
+**limit**
+
+Type: `integer`
+
+Amount of recent chats to return.
+
+**return**
+
+Type: `Promise`
+
+A promise that resolves with an array of chats.

@@ -1,6 +1,6 @@
 {
     "name": "osa-imessage",
-    "version": "2.1.2",
+    "version": "2.2.0",
     "description": "Bring the power of NodeJS to Apple iMessage",
     "author": {
         "name": "Will Franzen",
@@ -28,15 +28,13 @@
         "receive"
     ],
     "engines": {
-        "node": ">=6.4"
+        "node": ">=8"
     },
     "dependencies": {
         "macos-version": "^4.0.0",
         "one-liner": "^1.0.3",
-        "osa2": "^0.0.0"
-    },
-    "optionalDependencies": {
-        "sqlite3": "^3.1.8"
+        "osa2": "^0.0.0",
+        "sqlite": "^2.8.0"
     },
     "devDependencies": {
         "prettier": "^1.3.0"
