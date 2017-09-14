@@ -159,3 +159,12 @@ Amount of recent chats to return.
 Type: `Promise`
 
 A promise that resolves with an array of chats.
+
+### Debugging osa-imessage
+
+We use the popular [debug](https://www.npmjs.com/package/debug) library.
+
+```
+$ DEBUG=* node ./myscript.js
+$ DEBUG=osa-imessage ./myscript.js
+```

@@ -2,6 +2,7 @@ const fs = require('fs')
 const osa = require('osa2')
 const ol = require('one-liner')
 const assert = require('assert')
+const debug = require('debug')('osa-imessage')
 
 const versions = require('./macos_versions')
 const currentVersion = require('macos-version')()
@@ -9,7 +10,7 @@ const currentVersion = require('macos-version')()
 const messagesDb = require('./lib/messages-db.js')
 
 if (versions.broken.includes(currentVersion)) {
-    console.error(
+    debug(
         ol(`This version of macOS \(${currentVersion}) is known to be
             incompatible with osa-imessage. Please upgrade either
             macOS or osa-imessage.`)
@@ -18,7 +19,7 @@ if (versions.broken.includes(currentVersion)) {
 }
 
 if (!versions.working.includes(currentVersion)) {
-    console.warn(
+    debug(
         ol(`This version of macOS \(${currentVersion}) is currently
             untested with this version of osa-imessage. Proceed with
             caution.`)
@@ -139,7 +140,7 @@ function listen() {
         } catch (error) {
             bail = true
             emitter.emit('error', err)
-            console.error(
+            debug.error(
                 ol(`sqlite returned an error while polling for new messages!
                     bailing out of poll routine for safety. new messages will
                     not be detected`)

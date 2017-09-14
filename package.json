@@ -31,6 +31,7 @@
         "node": ">=8"
     },
     "dependencies": {
+        "debug": "^3.0.1",
         "macos-version": "^4.0.0",
         "one-liner": "^1.0.3",
         "osa2": "^0.0.0",
