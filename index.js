@@ -8,6 +8,12 @@ const currentVersion = require('macos-version')()
 
 const messagesDb = require('./lib/messages-db.js')
 
+function warn(str) {
+    if (!module.exports.SUPPRESS_WARNINGS) {
+        console.error(ol(str))
+    }
+}
+
 if (versions.broken.includes(currentVersion)) {
     console.error(
         ol(`This version of macOS \(${currentVersion}) is known to be
@@ -18,11 +24,9 @@ if (versions.broken.includes(currentVersion)) {
 }
 
 if (!versions.working.includes(currentVersion)) {
-    console.warn(
-        ol(`This version of macOS \(${currentVersion}) is currently
-            untested with this version of osa-imessage. Proceed with
-            caution.`)
-    )
+    warn(`This version of macOS \(${currentVersion}) is currently
+          untested with this version of osa-imessage. Proceed with
+          caution.`)
 }
 
 // Instead of doing something reasonable, Apple stores dates as the number of
@@ -139,11 +143,9 @@ function listen() {
         } catch (error) {
             bail = true
             emitter.emit('error', err)
-            console.error(
-                ol(`sqlite returned an error while polling for new messages!
-                    bailing out of poll routine for safety. new messages will
-                    not be detected`)
-            )
+            warn(`sqlite returned an error while polling for new messages!
+                  bailing out of poll routine for safety. new messages will
+                  not be detected`)
         }
     }
 
@@ -174,4 +176,10 @@ async function getRecentChats(limit = 10) {
     return chats
 }
 
-module.exports = { send, listen, handleForName, getRecentChats }
+module.exports = {
+    send,
+    listen,
+    handleForName,
+    getRecentChats,
+    SUPPRESS_WARNINGS: false,
+}
