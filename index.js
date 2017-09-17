@@ -9,7 +9,7 @@ const currentVersion = require('macos-version')()
 const messagesDb = require('./lib/messages-db.js')
 
 function warn(str) {
-    if (!module.exports.SUPPRESS_WARNINGS) {
+    if (!process.env.SUPPRESS_OSA_IMESSAGE_WARNINGS) {
         console.error(ol(str))
     }
 }
