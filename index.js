@@ -140,7 +140,7 @@ function listen() {
                 })
             })
             setTimeout(check, 1000)
-        } catch (error) {
+        } catch (err) {
             bail = true
             emitter.emit('error', err)
             warn(`sqlite returned an error while polling for new messages!
