@@ -2,9 +2,10 @@ const fs = require('fs')
 const osa = require('osa2')
 const ol = require('one-liner')
 const assert = require('assert')
+const macosVersion = require('macos-version')
 
 const versions = require('./macos_versions')
-const currentVersion = require('macos-version')()
+const currentVersion = macosVersion()
 
 const messagesDb = require('./lib/messages-db.js')
 
@@ -46,6 +47,7 @@ function fromAppleTime(ts) {
     }
 
     // unpackTime returns 0 if the timestamp wasn't packed
+    // TODO: see `packTimeConditionally`'s comment
     if (unpackTime(ts) != 0) {
         ts = unpackTime(ts)
     }
@@ -55,8 +57,19 @@ function fromAppleTime(ts) {
 
 // Since macOS 10.13 High Sierra, some timestamps appear to have extra data
 // packed. Dividing by 10^9 seems to get an Apple-style timestamp back.
+// According to a StackOverflow user, timestamps now have nanosecond precision
 function unpackTime(ts) {
     return Math.floor(ts / Math.pow(10, 9))
+}
+
+// TODO: Do some kind of database-based detection rather than relying on the
+// operating system version
+function packTimeConditionally(ts) {
+    if (macosVersion.is('>=10.13')) {
+        return ts * Math.pow(10, 9)
+    } else {
+        return ts
+    }
 }
 
 // Gets the proper handle string for a contact with the given name
@@ -104,7 +117,7 @@ function listen() {
     // Create an EventEmitter
     emitter = new (require('events')).EventEmitter()
 
-    let last = appleTimeNow()
+    let last = packTimeConditionally(appleTimeNow() - 5)
     let bail = false
 
     async function check() {
@@ -119,9 +132,9 @@ function listen() {
                 cache_roomnames
             FROM message
             LEFT OUTER JOIN handle ON message.handle_id = handle.ROWID
-            WHERE date >= ${last - 5}
+            WHERE date >= ${last}
         `
-        last = appleTimeNow()
+        last = packTimeConditionally(appleTimeNow())
 
         try {
             const db = await messagesDb.open()
