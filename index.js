@@ -120,7 +120,10 @@ function listen() {
     let last = packTimeConditionally(appleTimeNow() - 5)
     let bail = false
 
+    const dbPromise = messagesDb.open()
+
     async function check() {
+        const db = await dbPromise
         const query = `
             SELECT
                 guid,
@@ -137,7 +140,6 @@ function listen() {
         last = packTimeConditionally(appleTimeNow())
 
         try {
-            const db = await messagesDb.open()
             const messages = await db.all(query)
             messages.forEach(msg => {
                 if (emittedMsgs[msg.guid]) return
