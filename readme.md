@@ -1,10 +1,10 @@
 osa-imessage
 ====
 
-![](https://img.shields.io/npm/dm/osa-imessage.svg)
-![](https://img.shields.io/npm/v/osa-imessage.svg)
-![](https://img.shields.io/npm/l/osa-imessage.svg)
-[![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
+![](https://img.shields.io/npm/dm/osa-imessage.svg?style=flat-square)
+![](https://img.shields.io/npm/v/osa-imessage.svg?style=flat-square)
+![](https://img.shields.io/npm/l/osa-imessage.svg?style=flat-square)
+[![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
 > Send and receive iMessages through nodejs
 
@@ -34,7 +34,7 @@ imessage.send('+15555555555', 'Hello World!')
 **Receive messages**
 ```js
 imessage.listen().on('message', (msg) => {
-    console.log(`'${msg.text}' from ${msg.handle}`)
+    if (!msg.fromMe) console.log(`'${msg.text}' from ${msg.handle}`)
 })
 ```
 
