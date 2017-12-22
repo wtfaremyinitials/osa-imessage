@@ -81,6 +81,16 @@ function handleForName(name) {
     })(name)
 }
 
+// Gets the display name for a given handle
+// TODO: support group chats
+function nameForHandle(handle) {
+    assert(typeof handle == 'string', 'handle must be a string')
+    return osa(handle => {
+        const Messages = Application('Messages')
+        return Messages.buddies.whose({ handle: handle }).name()[0]
+    })(handle)
+}
+
 // Sends a message to the given handle
 function send(handle, message) {
     assert(typeof handle == 'string', 'handle must be a string')
@@ -195,6 +205,7 @@ module.exports = {
     send,
     listen,
     handleForName,
+    nameForHandle,
     getRecentChats,
     SUPPRESS_WARNINGS: false,
 }

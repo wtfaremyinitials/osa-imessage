@@ -144,6 +144,22 @@ Type: `Promise<string>`
 
 A promise that resolves with the `handle` of the contact, or rejects if nobody was found.
 
+### Get the name associated with a given handle
+
+`nameForHandle(handle) -> Promise<name>`
+
+**handle**
+
+Type: `string`
+
+The handle of a contact.
+
+**return**
+
+Type: `Promise<string>`
+
+A promise that resolved with the full name of the desired contact, as displayed in `Messages.app`.
+
 ### Get recents chats
 
 `getRecentChats(limit) -> Promise`
