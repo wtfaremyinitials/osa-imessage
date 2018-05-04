@@ -91,20 +91,6 @@ function nameForHandle(handle) {
     })(handle)
 }
 
-// Attempts to find the target from a handle string in buddies or textChats
-// Returns the target if lookup fails
-function findTarget(handle) {
-  try {
-      return Messages.buddies.whose({ handle: handle })[0]
-  } catch (e) {}
-
-  try {
-      return Messages.textChats.byId('iMessage;+;' + handle)()
-  } catch (e) {}
-
-  return handle;
-}
-
 // Sends a message to the given handle
 function send(handle, message) {
     assert(typeof handle == 'string', 'handle must be a string')
@@ -113,31 +99,45 @@ function send(handle, message) {
     return sendMessageOrFile(handle, message)
 }
 
-// Sends a message to the given handle
+// Sends the file at the filepath to the given handle
 function sendFile(handle, filepath) {
     assert(typeof handle == 'string', 'handle must be a string')
     assert(typeof filepath == 'string', 'filepath must be a string')
 
-    return sendMessageOrAttachment(handle, filepath, true)
+    return sendMessageOrFile(handle, filepath, true)
 }
 
+// Handles sending a filepath or a message to a given handle
 function sendMessageOrFile(handle, messageOrFilepath, isFile) {
-  return osa((handle, message) => {
+  return osa((handle, messageOrFilepath, isFile) => {
       const Messages = Application('Messages')
 
-      const target = findTarget(handle)
+      let target
+
+      try {
+          target = Messages.buddies.whose({ handle: handle })[0]
+      } catch (e) {}
+
+      try {
+          target = Messages.textChats.byId('iMessage;+;' + handle)()
+      } catch (e) {}
 
       let message = messageOrFilepath
 
       // If a string filepath was provided, we need to convert it to an
-      // osascript file object
+      // osascript file object.
+      // This must be done in the osa context to have acess to Path
       if (isFile) {
           message = Path(messageOrFilepath)
       }
 
-      Messages.send(message, { to: target })
+      try {
+        return Messages.send(message, { to: target })
+      } catch (e) {
+        throw new Error(`no thread with handle '${handle}'`)
+      }
 
-  })(handle, message)
+  })(handle, messageOrFilepath, isFile)
 }
 
 let emitter = null
@@ -227,7 +227,7 @@ async function getRecentChats(limit = 10) {
 
 module.exports = {
     send,
-    sendAttchment,
+    sendFile,
     listen,
     handleForName,
     nameForHandle,

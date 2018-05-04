@@ -1,6 +1,6 @@
-const {send, sendAttchment} = require('./index');
+const {send, sendFile} = require('./index');
 
 // send('+15109175552', 'Hullo Wurld');
 
-sendAttchment('+15109175552', 'No counter')
+sendFile('+15109175552', '/Users/elliotaplant/Desktop/Nicole.mov')
   .catch(console.error);
