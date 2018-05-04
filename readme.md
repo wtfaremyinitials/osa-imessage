@@ -33,7 +33,7 @@ imessage.send('+15555555555', 'Hello World!')
 
 **Send a file**
 ```js
-imessage.send('+15555555555', '/Absolute/Path/To/Your/File.jpg')
+imessage.sendFile('+15555555555', '/Absolute/Path/To/Your/File.jpg')
 ```
 
 **Receive messages**
