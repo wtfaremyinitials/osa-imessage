@@ -91,10 +91,16 @@ function nameForHandle(handle) {
     })(handle)
 }
 
-// Sends a message to the given handle
-function send(handle, message) {
+// Sends a message to the given handle with provided attachments as a filepath
+function send(handle, message, attachments) {
     assert(typeof handle == 'string', 'handle must be a string')
     assert(typeof message == 'string', 'message must be a string')
+
+    if (attachments) {
+      assert(Array.isArray(attachments), 'attachments must be an array')
+      assert(attachments.every(attachment => typeof attachment === 'string'), 'every attachment must be a string')
+    }
+
     return osa((handle, message) => {
         const Messages = Application('Messages')
 
@@ -109,6 +115,7 @@ function send(handle, message) {
         } catch (e) {}
 
         try {
+          console.log('Messages.send', Messages.send);
             Messages.send(message, { to: target })
         } catch (e) {
             throw new Error(`no thread with handle '${handle}'`)
