@@ -115,12 +115,39 @@ function send(handle, message, attachments) {
         } catch (e) {}
 
         try {
-          console.log('Messages.send', Messages.send);
-            Messages.send(message, { to: target })
+            Messages.send(message, { to: target }, '/Users/elliotaplant/Documents/Projects/AmberVideos/Vids/Carson.mov')
         } catch (e) {
             throw new Error(`no thread with handle '${handle}'`)
         }
     })(handle, message)
+}
+
+// Sends a message to the given handle with provided attachments as a filepath
+function sendAttchment(handle, attachment) {
+    assert(typeof handle == 'string', 'handle must be a string')
+    assert(typeof attachment == 'string', 'attachment must be a file path string')
+
+    return osa((handle, message) => {
+        const Messages = Application('Messages')
+
+        let target
+
+        try {
+            target = Messages.buddies.whose({ handle: handle })[0]
+        } catch (e) {}
+
+        try {
+            target = Messages.textChats.byId('iMessage;+;' + handle)()
+        } catch (e) {}
+
+        try {
+            // console.log('Messages.sendAttach', Messages.sendAttach);
+            console.log('POSIX', POSIX);
+            Messages.send('/Users/elliotaplant/Documents/Projects/AmberVideos/Vids/Carson.mov', { to: target }, )
+        } catch (e) {
+            throw new Error(`no thread with handle '${handle}'`)
+        }
+    })(handle, attachment)
 }
 
 let emitter = null
@@ -210,6 +237,7 @@ async function getRecentChats(limit = 10) {
 
 module.exports = {
     send,
+    sendAttchment,
     listen,
     handleForName,
     nameForHandle,
