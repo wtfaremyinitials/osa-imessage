@@ -91,63 +91,53 @@ function nameForHandle(handle) {
     })(handle)
 }
 
-// Sends a message to the given handle with provided attachments as a filepath
-function send(handle, message, attachments) {
+// Attempts to find the target from a handle string in buddies or textChats
+// Returns the target if lookup fails
+function findTarget(handle) {
+  try {
+      return Messages.buddies.whose({ handle: handle })[0]
+  } catch (e) {}
+
+  try {
+      return Messages.textChats.byId('iMessage;+;' + handle)()
+  } catch (e) {}
+
+  return handle;
+}
+
+// Sends a message to the given handle
+function send(handle, message) {
     assert(typeof handle == 'string', 'handle must be a string')
     assert(typeof message == 'string', 'message must be a string')
 
-    if (attachments) {
-      assert(Array.isArray(attachments), 'attachments must be an array')
-      assert(attachments.every(attachment => typeof attachment === 'string'), 'every attachment must be a string')
-    }
-
-    return osa((handle, message) => {
-        const Messages = Application('Messages')
-
-        let target
-
-        try {
-            target = Messages.buddies.whose({ handle: handle })[0]
-        } catch (e) {}
-
-        try {
-            target = Messages.textChats.byId('iMessage;+;' + handle)()
-        } catch (e) {}
-
-        try {
-            Messages.send(message, { to: target }, '/Users/elliotaplant/Documents/Projects/AmberVideos/Vids/Carson.mov')
-        } catch (e) {
-            throw new Error(`no thread with handle '${handle}'`)
-        }
-    })(handle, message)
+    return sendMessageOrFile(handle, message)
 }
 
-// Sends a message to the given handle with provided attachments as a filepath
-function sendAttchment(handle, attachment) {
+// Sends a message to the given handle
+function sendFile(handle, filepath) {
     assert(typeof handle == 'string', 'handle must be a string')
-    assert(typeof attachment == 'string', 'attachment must be a file path string')
+    assert(typeof filepath == 'string', 'filepath must be a string')
 
-    return osa((handle, message) => {
-        const Messages = Application('Messages')
+    return sendMessageOrAttachment(handle, filepath, true)
+}
 
-        let target
+function sendMessageOrFile(handle, messageOrFilepath, isFile) {
+  return osa((handle, message) => {
+      const Messages = Application('Messages')
 
-        try {
-            target = Messages.buddies.whose({ handle: handle })[0]
-        } catch (e) {}
+      const target = findTarget(handle)
 
-        try {
-            target = Messages.textChats.byId('iMessage;+;' + handle)()
-        } catch (e) {}
+      let message = messageOrFilepath
 
-        try {
-            // console.log('Messages.sendAttach', Messages.sendAttach);
-            console.log('POSIX', POSIX);
-            Messages.send('/Users/elliotaplant/Documents/Projects/AmberVideos/Vids/Carson.mov', { to: target }, )
-        } catch (e) {
-            throw new Error(`no thread with handle '${handle}'`)
-        }
-    })(handle, attachment)
+      // If a string filepath was provided, we need to convert it to an
+      // osascript file object
+      if (isFile) {
+          message = Path(messageOrFilepath)
+      }
+
+      Messages.send(message, { to: target })
+
+  })(handle, message)
 }
 
 let emitter = null
