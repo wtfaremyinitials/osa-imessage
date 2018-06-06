@@ -5,7 +5,7 @@
     "author": {
         "name": "Will Franzen",
         "email": "wtfranzen@gmail.com",
-        "url": "http://will.xyz"
+        "url": "http://will.wtf"
     },
     "scripts": {
         "fmt": "prettier --write '*.js'"
