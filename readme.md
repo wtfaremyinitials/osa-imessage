@@ -31,6 +31,11 @@ const imessage = require('osa-imessage')
 imessage.send('+15555555555', 'Hello World!')
 ```
 
+**Send a file**
+```js
+imessage.sendFile('+15555555555', '/Absolute/Path/To/Your/File.jpg')
+```
+
 **Receive messages**
 ```js
 imessage.listen().on('message', (msg) => {
