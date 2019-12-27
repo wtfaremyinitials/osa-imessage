@@ -105,6 +105,10 @@ function send(handle, message) {
         } catch (e) {}
 
         try {
+            target = Messages.services.byName("SMS").buddies.byId(handle)
+        } catch (e) {}
+
+        try {
             target = Messages.textChats.byId('iMessage;+;' + handle)()
         } catch (e) {}
 
