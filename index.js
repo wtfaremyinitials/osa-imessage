@@ -105,7 +105,9 @@ function send(handle, message) {
         } catch (e) {}
 
         try {
-            target = Messages.services.byName("SMS").buddies.byId(handle)
+            if (!target) {
+                target = Messages.services.byName("SMS").buddies.byId(handle)
+            }
         } catch (e) {}
 
         try {
