@@ -101,7 +101,17 @@ function send(handle, message) {
         let target
 
         try {
-            target = Messages.buddies.whose({ handle: handle })[0]
+            const options = Messages.buddies.whose({ handle: handle })
+            let chosenIndex = 0;
+
+            for (let index = 0; index < options.length; index++) {
+                const option = options[index];
+                if (option.service.name() === "SMS") {
+                    chosenIndex = index;
+                }
+            }
+
+            target = Messages.buddies.whose({ handle: handle })[chosenIndex];
         } catch (e) {}
 
         try {
