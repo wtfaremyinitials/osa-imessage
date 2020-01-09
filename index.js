@@ -92,10 +92,10 @@ function nameForHandle(handle) {
 }
 
 // Sends a message to the given handle
-function send(handle, message) {
+function send(handle, message, service = "SMS") {
     assert(typeof handle == 'string', 'handle must be a string')
     assert(typeof message == 'string', 'message must be a string')
-    return osa((handle, message) => {
+    return osa((handle, message, service) => {
         const Messages = Application('Messages')
 
         let target
@@ -103,21 +103,14 @@ function send(handle, message) {
         try {
             const options = Messages.buddies.whose({ handle: handle })
             let chosenIndex = 0;
-
             for (let index = 0; index < options.length; index++) {
                 const option = options[index];
-                if (option.service.name() === "SMS") {
+                if (option.service.name().toLowerCase() === service.toLowerCase()) {
                     chosenIndex = index;
                 }
             }
 
-            target = Messages.buddies.whose({ handle: handle })[chosenIndex];
-        } catch (e) {}
-
-        try {
-            if (!target) {
-                target = Messages.services.byName("SMS").buddies.byId(handle)
-            }
+            target = options[chosenIndex];
         } catch (e) {}
 
         try {
@@ -129,7 +122,7 @@ function send(handle, message) {
         } catch (e) {
             throw new Error(`no thread with handle '${handle}'`)
         }
-    })(handle, message)
+    })(handle, message, service)
 }
 
 let emitter = null
@@ -154,6 +147,8 @@ function listen() {
             SELECT
                 guid,
                 id as handle,
+                message.service,
+                account,
                 text,
                 date,
                 date_read,
@@ -174,6 +169,7 @@ function listen() {
                     guid: msg.guid,
                     text: msg.text,
                     handle: msg.handle,
+                    service: msg.service === "SMS" ? msg.service : msg.account,
                     group: msg.cache_roomnames,
                     fromMe: !!msg.is_from_me,
                     date: fromAppleTime(msg.date),
