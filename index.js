@@ -6,6 +6,7 @@ const macosVersion = require('macos-version')
 
 const versions = require('./macos_versions')
 const currentVersion = macosVersion()
+const isParticipant = (macosVersion.is('>=14.0')) ? true : false
 
 const messagesDb = require('./lib/messages-db.js')
 
@@ -75,33 +76,33 @@ function packTimeConditionally(ts) {
 // Gets the proper handle string for a contact with the given name
 function handleForName(name) {
     assert(typeof name == 'string', 'name must be a string')
-    return osa(name => {
+    return osa((name, isParticipant) => {
         const Messages = Application('Messages')
-        return Messages.buddies.whose({ name: name })[0].handle()
-    })(name)
+        return (isParticipant ? Messages.participants.whose({ name: name })[0].handle() : Messages.buddies.whose({ name: name })[0].handle())
+    })(name, isParticipant)
 }
 
 // Gets the display name for a given handle
 // TODO: support group chats
 function nameForHandle(handle) {
     assert(typeof handle == 'string', 'handle must be a string')
-    return osa(handle => {
+    return osa((handle, isParticipant) => {
         const Messages = Application('Messages')
-        return Messages.buddies.whose({ handle: handle }).name()[0]
-    })(handle)
+        return (isParticipant ? Messages.participants.whose({ handle: handle })[0].name() : Messages.buddies.whose({ handle: handle })[0].name())
+    })(handle, isParticipant)
 }
 
 // Sends a message to the given handle
 function send(handle, message) {
     assert(typeof handle == 'string', 'handle must be a string')
     assert(typeof message == 'string', 'message must be a string')
-    return osa((handle, message) => {
+    return osa((handle, message, isParticipant) => {
         const Messages = Application('Messages')
 
         let target
 
         try {
-            target = Messages.buddies.whose({ handle: handle })[0]
+            target = isParticipant ? Messages.participants.whose({ handle: handle })[0] : Messages.buddies.whose({ handle: handle })[0]
         } catch (e) {}
 
         try {
@@ -113,11 +114,12 @@ function send(handle, message) {
         } catch (e) {
             throw new Error(`no thread with handle '${handle}'`)
         }
-    })(handle, message)
+    })(handle, message, isParticipant)
 }
 
 let emitter = null
 let emittedMsgs = []
+
 function listen() {
     // If listen has already been run, return the existing emitter
     if (emitter != null) {
@@ -125,7 +127,7 @@ function listen() {
     }
 
     // Create an EventEmitter
-    emitter = new (require('events')).EventEmitter()
+    emitter = new(require('events')).EventEmitter()
 
     let last = packTimeConditionally(appleTimeNow() - 5)
     let bail = false
